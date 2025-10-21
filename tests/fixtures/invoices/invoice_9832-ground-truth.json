@@ -1,0 +1,45 @@
+{
+  "file_name": "invoice_9832.pdf",
+  "description": "Fortium Partners professional services invoice",
+  "expected_fields": {
+    "supplier.name": "Fortium Partners, LP",
+    "supplier.address": "PO BOX 733128, Dallas, TX 75373-3128, United States",
+    "supplier.phone": "",
+    "supplier.email": "accounting@fortiumpartners.com",
+    "supplier.tax_id": "",
+    "customer.name": "Greg Rzonca / Foresite",
+    "customer.address": "633 S. Andrews Avenue, Suite 204, Fort Lauderdale, FL 33301, United States",
+    "customer.account_id": "",
+    "invoice.number": "9832",
+    "invoice.issue_date": "2025-06-30",
+    "invoice.due_date": "2025-07-29",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 53760.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 53760.0,
+    "invoice.payment_terms": "Net 30",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 2,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Professional Services: Quality Built Fractional CTO - James Simmons (February\u2013May 2025)",
+      "quantity": 1,
+      "unit_price": 53760.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 53760.0
+    },
+    {
+      "sku": "",
+      "description": "Reimbursable Expenses",
+      "quantity": 1,
+      "unit_price": 0.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 0.0
+    }
+  ],
+  "notes": "Undocumented performance objectives amounts for February\u2013May 2025 included in the fixed rate. No reimbursable expenses incurred."
+}

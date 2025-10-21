@@ -1,0 +1,36 @@
+{
+  "file_name": "Invoice-L5M90XHM-0005.pdf",
+  "description": "Subscription invoice from Skylead Technologies for a 1\u2011month subscription",
+  "expected_fields": {
+    "supplier.name": "Skylead Technologies",
+    "supplier.address": "71 Rodney Court 6-8, Maida Vale, London W9 1TJ, United Kingdom",
+    "supplier.phone": "+44 7891 816633",
+    "supplier.email": "billing@skylead.io",
+    "supplier.tax_id": "GB419017609",
+    "customer.name": "James Simmons",
+    "customer.address": "17181 Marina View Pl., Huntington Beach, California 92649, United States",
+    "customer.account_id": "",
+    "invoice.number": "L5M90XHM-0005",
+    "invoice.issue_date": "2025-08-12",
+    "invoice.due_date": "2025-08-12",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 100.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 100.0,
+    "invoice.payment_terms": "Due on issue date",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Skylead subscription (Aug 12 \u2013 Sep 12, 2025)",
+      "quantity": 1,
+      "unit_price": 100.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 100.0
+    }
+  ],
+  "notes": ""
+}

@@ -1,0 +1,45 @@
+{
+  "file_name": "Invoice-INV74914.pdf",
+  "description": "Appcues subscription invoice with tax line item",
+  "expected_fields": {
+    "supplier.name": "Appcues, Inc.",
+    "supplier.address": "68 Harrison Ave #605 PMB 94414, Boston, MA 02111, United States",
+    "supplier.phone": "",
+    "supplier.email": "",
+    "supplier.tax_id": "",
+    "customer.name": "Foresite",
+    "customer.address": "",
+    "customer.account_id": "-123390",
+    "invoice.number": "INV74914",
+    "invoice.issue_date": "2025-08-03",
+    "invoice.due_date": "2025-08-03",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 322.18,
+    "invoice.tax": 0.0,
+    "invoice.total": 322.18,
+    "invoice.payment_terms": "Due on receipt",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 2,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Appcues Web Essentials (Monthly) - 2,500 MAUs (Aug 03 \u2013 Sep 02, 2025)",
+      "quantity": 1,
+      "unit_price": 299.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 299.0
+    },
+    {
+      "sku": "",
+      "description": "Stripe Tax Line Item (7.75% tax by Avalara)",
+      "quantity": 1,
+      "unit_price": 23.18,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 23.18
+    }
+  ],
+  "notes": "Discount item (Annual Contract Discount) $0.00."
+}

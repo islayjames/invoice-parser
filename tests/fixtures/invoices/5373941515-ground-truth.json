@@ -1,0 +1,36 @@
+{
+  "file_name": "5373941515.pdf",
+  "description": "Google Workspace Business Starter invoice",
+  "expected_fields": {
+    "supplier.name": "Google LLC",
+    "supplier.address": "1600 Amphitheatre Pkwy, Mountain View, CA 94043, United States",
+    "supplier.phone": "",
+    "supplier.email": "",
+    "supplier.tax_id": "77-0493581",
+    "customer.name": "James M Simmons",
+    "customer.address": "7856 Moonmist Circle, Huntington Beach, CA 92648, United States",
+    "customer.account_id": "9075-4537-4618",
+    "invoice.number": "5373941515",
+    "invoice.issue_date": "2025-09-30",
+    "invoice.due_date": "2025-09-30",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 100.8,
+    "invoice.tax": 0.0,
+    "invoice.total": 100.8,
+    "invoice.payment_terms": "Automatic payment",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Google Workspace Business Starter subscription (Sep 1 \u2013 Sep 30, 2025)",
+      "quantity": 12,
+      "unit_price": 8.4,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 100.8
+    }
+  ],
+  "notes": "Domain: heylime.com"
+}

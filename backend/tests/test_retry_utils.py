@@ -7,11 +7,28 @@ Expected to FAIL: Implementation doesn't exist yet
 
 import pytest
 import time
-from unittest.mock import AsyncMock, patch
+import asyncio
+from unittest.mock import AsyncMock, patch, Mock
 from openai import RateLimitError, APITimeoutError, OpenAIError
+import httpx
 
 # This import will FAIL - implementation doesn't exist yet
 from app.utils.retry import retry_with_exponential_backoff
+
+
+# Helper to create proper OpenAI exceptions for testing
+def create_rate_limit_error(message="Rate limit exceeded"):
+    response = Mock(spec=httpx.Response)
+    response.status_code = 429
+    response.headers = {}
+    return RateLimitError(message, response=response, body=None)
+
+
+def create_timeout_error(message="Request timed out"):
+    request = Mock(spec=httpx.Request)
+    request.url = "https://api.openai.com/v1/test"
+    request.method = "POST"
+    return APITimeoutError(request=request)
 
 
 class TestRetryUtility:
@@ -35,8 +52,8 @@ class TestRetryUtility:
         """Should retry when RateLimitError is raised"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit exceeded"),
-                RateLimitError("Rate limit exceeded"),
+                create_rate_limit_error(),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -51,7 +68,7 @@ class TestRetryUtility:
         """Should retry when APITimeoutError is raised"""
         mock_func = AsyncMock(
             side_effect=[
-                APITimeoutError("Request timed out"),
+                create_timeout_error(),
                 "success",
             ]
         )
@@ -79,9 +96,8 @@ class TestRetryUtility:
     @pytest.mark.asyncio
     async def test_fails_after_max_retries(self):
         """Should raise exception after max_retries (3) attempts"""
-        mock_func = AsyncMock(
-            side_effect=RateLimitError("Rate limit exceeded")
-        )
+        error = create_rate_limit_error()
+        mock_func = AsyncMock(side_effect=error)
 
         with pytest.raises(RateLimitError):
             await retry_with_exponential_backoff(mock_func, max_retries=3)
@@ -94,9 +110,9 @@ class TestRetryUtility:
         """Should use exponential backoff: 1s, 2s, 4s pattern"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit"),
-                RateLimitError("Rate limit"),
-                RateLimitError("Rate limit"),
+                create_rate_limit_error(),
+                create_rate_limit_error(),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -127,8 +143,8 @@ class TestRetryUtility:
         """Should add random jitter to delays to prevent thundering herd"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit"),
-                RateLimitError("Rate limit"),
+                create_rate_limit_error(),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -173,7 +189,8 @@ class TestRetryUtility:
     @pytest.mark.asyncio
     async def test_custom_max_retries(self):
         """Should respect custom max_retries parameter"""
-        mock_func = AsyncMock(side_effect=RateLimitError("Rate limit"))
+        error = create_rate_limit_error()
+        mock_func = AsyncMock(side_effect=error)
 
         with pytest.raises(RateLimitError):
             await retry_with_exponential_backoff(mock_func, max_retries=1)
@@ -186,7 +203,7 @@ class TestRetryUtility:
         """Should use custom initial_delay parameter"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit"),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -210,8 +227,8 @@ class TestRetryUtility:
         """Should use custom backoff_factor parameter"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit"),
-                RateLimitError("Rate limit"),
+                create_rate_limit_error(),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -259,7 +276,7 @@ class TestRetryUtility:
         """Should log retry attempts for debugging"""
         mock_func = AsyncMock(
             side_effect=[
-                RateLimitError("Rate limit"),
+                create_rate_limit_error(),
                 "success",
             ]
         )
@@ -275,12 +292,6 @@ class TestRetryUtility:
     @pytest.mark.asyncio
     async def test_async_function_compatibility(self):
         """Should work with async functions"""
-        async def async_function(value):
-            await asyncio.sleep(0.01)
-            if value == "fail":
-                raise RateLimitError("Rate limit")
-            return f"result: {value}"
-
         # Test with failure then success
         call_count = 0
 
@@ -288,7 +299,7 @@ class TestRetryUtility:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
-                raise RateLimitError("Rate limit")
+                raise create_rate_limit_error()
             return "success"
 
         result = await retry_with_exponential_backoff(failing_then_success)

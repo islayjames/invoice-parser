@@ -8,6 +8,7 @@ Expected to FAIL: Implementation doesn't exist yet
 import pytest
 from io import BytesIO
 from fastapi import UploadFile, HTTPException
+from unittest.mock import Mock, AsyncMock
 
 # This import will FAIL - implementation doesn't exist yet
 from app.services.file_validator import validate_file
@@ -21,99 +22,92 @@ class TestFileValidation:
     def valid_pdf_file(self):
         """Create a mock valid PDF file"""
         content = b"%PDF-1.4\n%\xE2\xE3\xCF\xD3\n" + b"x" * 1024  # 1KB PDF
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.pdf",
-            file=file,
-            content_type="application/pdf",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.pdf"
+        upload_file.content_type = "application/pdf"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def valid_jpeg_file(self):
         """Create a mock valid JPEG file"""
         content = b"\xff\xd8\xff\xe0" + b"x" * 2048  # 2KB JPEG
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.jpg",
-            file=file,
-            content_type="image/jpeg",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.jpg"
+        upload_file.content_type = "image/jpeg"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def valid_png_file(self):
         """Create a mock valid PNG file"""
         content = b"\x89PNG\r\n\x1a\n" + b"x" * 1500  # 1.5KB PNG
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.png",
-            file=file,
-            content_type="image/png",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.png"
+        upload_file.content_type = "image/png"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def valid_text_file(self):
         """Create a mock valid text file"""
         content = b"Invoice text content\n" * 100
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.txt",
-            file=file,
-            content_type="text/plain",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.txt"
+        upload_file.content_type = "text/plain"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def oversized_file(self):
         """Create a file larger than 5MB"""
         content = b"x" * (5 * 1024 * 1024 + 1)  # 5MB + 1 byte
-        file = BytesIO(content)
-        return UploadFile(
-            filename="large_invoice.pdf",
-            file=file,
-            content_type="application/pdf",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "large_invoice.pdf"
+        upload_file.content_type = "application/pdf"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def unsupported_mime_file(self):
         """Create a file with unsupported MIME type"""
         content = b"PK\x03\x04" + b"x" * 1024  # ZIP file signature
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.zip",
-            file=file,
-            content_type="application/zip",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.zip"
+        upload_file.content_type = "application/zip"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def mime_spoofed_file(self):
         """Create a file with mismatched MIME type and content"""
-        content = b"PK\x03\x04" + b"x" * 1024  # ZIP content
-        file = BytesIO(content)
-        return UploadFile(
-            filename="invoice.pdf",  # PDF extension
-            file=file,
-            content_type="application/pdf",  # PDF MIME type
-        )
+        # Use better ZIP header that python-magic can detect
+        # Standard minimal ZIP file header
+        content = b"PK\x03\x04\x14\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08\x00\x00\x00test.txt" + b"\x00" * 100
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.pdf"  # PDF extension
+        upload_file.content_type = "application/pdf"  # PDF MIME type
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     @pytest.fixture
     def empty_file(self):
         """Create an empty file"""
-        file = BytesIO(b"")
-        return UploadFile(
-            filename="empty.pdf",
-            file=file,
-            content_type="application/pdf",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "empty.pdf"
+        upload_file.content_type = "application/pdf"
+        upload_file.read = AsyncMock(return_value=b"")
+        return upload_file
 
     @pytest.fixture
     def exact_5mb_file(self):
         """Create a file exactly 5MB in size"""
         content = b"x" * (5 * 1024 * 1024)  # Exactly 5MB
-        file = BytesIO(content)
-        return UploadFile(
-            filename="exactly_5mb.pdf",
-            file=file,
-            content_type="application/pdf",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "exactly_5mb.pdf"
+        upload_file.content_type = "application/pdf"
+        upload_file.read = AsyncMock(return_value=content)
+        return upload_file
 
     # Test cases
     @pytest.mark.asyncio
@@ -186,7 +180,10 @@ class TestFileValidation:
             await validate_file(mime_spoofed_file)
 
         assert exc_info.value.status_code == 415
-        assert "mismatch" in str(exc_info.value.detail).lower() or "invalid" in str(exc_info.value.detail).lower()
+        # Should reject ZIP file even when declared as PDF
+        assert ("mismatch" in str(exc_info.value.detail).lower() or
+                "unsupported" in str(exc_info.value.detail).lower() or
+                "invalid" in str(exc_info.value.detail).lower())
 
     @pytest.mark.asyncio
     async def test_validates_empty_file(self, empty_file):
@@ -243,12 +240,10 @@ class TestFileValidation:
 
         for mime_type, magic_bytes in supported_images:
             content = magic_bytes + b"x" * 1024
-            file = BytesIO(content)
-            upload_file = UploadFile(
-                filename=f"test.{mime_type.split('/')[1]}",
-                file=file,
-                content_type=mime_type,
-            )
+            upload_file = Mock(spec=UploadFile)
+            upload_file.filename = f"test.{mime_type.split('/')[1]}"
+            upload_file.content_type = mime_type
+            upload_file.read = AsyncMock(return_value=content)
 
             result = await validate_file(upload_file)
             assert result is not None
@@ -259,12 +254,10 @@ class TestFileValidation:
     async def test_accepts_markdown_files(self):
         """Should accept markdown text files"""
         content = b"# Invoice\n\n**Total**: $1000"
-        file = BytesIO(content)
-        upload_file = UploadFile(
-            filename="invoice.md",
-            file=file,
-            content_type="text/markdown",
-        )
+        upload_file = Mock(spec=UploadFile)
+        upload_file.filename = "invoice.md"
+        upload_file.content_type = "text/markdown"
+        upload_file.read = AsyncMock(return_value=content)
 
         result = await validate_file(upload_file)
         assert result is not None

@@ -1,0 +1,36 @@
+{
+  "file_name": "Invoice-GGFIACJF-0003.pdf",
+  "description": "Clay Labs starter plan invoice",
+  "expected_fields": {
+    "supplier.name": "Clay Labs Inc",
+    "supplier.address": "111 W 19th St, 5th floor, New York, NY 10011, United States",
+    "supplier.phone": "+1 425-647-3442",
+    "supplier.email": "ar@clay.com",
+    "supplier.tax_id": "",
+    "customer.name": "James Montano Simmons",
+    "customer.address": "17181 Marina View Place, Huntington Beach, CA 92649, United States",
+    "customer.account_id": "",
+    "invoice.number": "GGFIACJF-0003",
+    "invoice.issue_date": "2025-07-23",
+    "invoice.due_date": "2025-07-23",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 149.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 149.0,
+    "invoice.payment_terms": "Due immediately",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Starter Plan subscription (Jul 23 \u2013 Aug 23, 2025)",
+      "quantity": 1,
+      "unit_price": 149.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 149.0
+    }
+  ],
+  "notes": ""
+}
