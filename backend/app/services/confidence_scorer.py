@@ -22,7 +22,7 @@ CRITICAL_FIELDS = [
     "invoice.number",
     "invoice.issue_date",
     "invoice.due_date",
-    "invoice.total_amount",
+    "invoice.total",  # Changed from invoice.total_amount to match GPT-4o output schema
 ]
 
 # Warning threshold for moderate confidence (50-90%)
