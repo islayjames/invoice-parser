@@ -54,7 +54,9 @@ def load_test_data(invoice_name: str) -> Tuple[bytes, dict]:
     Raises:
         FileNotFoundError: If invoice or ground truth file not found
     """
-    fixtures_dir = Path(__file__).parent / "fixtures" / "invoices"
+    # Fixtures are at project root: /home/james/dev/invoice-parser/tests/fixtures/invoices/
+    project_root = Path(__file__).parent.parent.parent  # backend/tests/ -> backend/ -> project root
+    fixtures_dir = project_root / "tests" / "fixtures" / "invoices"
 
     # Load PDF
     pdf_path = fixtures_dir / invoice_name
