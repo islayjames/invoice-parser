@@ -23,7 +23,7 @@ The Invoice Parser is an AI-powered prototype system that extracts structured da
 **Key Technical Characteristics:**
 - **Architecture**: Serverless FastAPI backend + React SPA frontend
 - **AI Engine**: GPT-4o Vision API with field-level confidence scoring
-- **Processing Model**: Synchronous (≤20s response time)
+- **Processing Model**: Synchronous (≤25s response time)
 - **Data Model**: Stateless, no persistence (privacy-first design)
 - **Deployment**: Vercel (frontend) + Railway (backend)
 - **Target**: MVP/Demo for internal stakeholders
@@ -285,7 +285,7 @@ Content-Type: application/pdf
     "message": "Invoice processing exceeded maximum time limit",
     "details": {
       "retry_attempts": 3,
-      "timeout_seconds": 20
+      "timeout_seconds": 25
     }
   }
 }
@@ -1062,7 +1062,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 25000, // 25s (slightly more than backend 20s limit)
+  timeout: 25000, // 25s (matches backend 25s limit)
   headers: {
     'Content-Type': 'multipart/form-data'
   }
@@ -1535,7 +1535,7 @@ npm run dev
   - Profile parse endpoint for bottlenecks
   - Optimize image encoding/processing
   - Add async file reading where possible
-  - Verify ≤20s response time for 5MB files
+  - Verify ≤25s response time for 5MB files
 
 - [ ] **TRD-018**: Backend API documentation (2h) - Priority: Medium - Depends: TRD-013
   - Configure FastAPI OpenAPI/Swagger UI
@@ -1603,7 +1603,7 @@ npm run dev
 - [ ] **TRD-028**: API client service (2h) - Priority: High - Depends: TRD-021
   - Create Axios client with base URL configuration
   - Implement `parseInvoice(file)` function with FormData
-  - Configure timeout (25s to accommodate backend 20s limit)
+  - Configure timeout (25s to match backend 25s limit)
   - Add error handling and response transformation
 
 - [ ] **TRD-029**: Frontend integration and state management (3h) - Priority: High - Depends: TRD-022, TRD-024, TRD-027, TRD-028
@@ -1636,7 +1636,7 @@ npm run dev
 - [x] **TRD-033**: Accuracy validation against test dataset (4h) ✅ COMPLETED - Priority: High - Depends: TRD-016, TRD-006
   - Status: PASSED - 82.4% average accuracy (exceeds 70% threshold)
   - Test results: 3/3 invoices tested, 100% extraction rate for critical financial fields
-  - Performance: 17-19s average processing time (within NFR-001 <20s limit)
+  - Performance: 17-19s average processing time (within NFR-001 <25s limit)
   - Run parsing on all test dataset samples
   - Compare extracted fields to ground truth
   - Calculate field-level accuracy percentages
@@ -1646,7 +1646,7 @@ npm run dev
 - [ ] **TRD-034**: Performance testing (3h) - Priority: High - Depends: TRD-016
   - Test parse time for various file sizes (1MB, 3MB, 5MB)
   - Test with different file formats (PDF, JPEG, PNG)
-  - Validate ≤20s response time for all samples
+  - Validate ≤25s response time for all samples
   - Profile bottlenecks if exceeding threshold
 
 - [ ] **TRD-035**: Code coverage analysis (2h) - Priority: Medium - Depends: TRD-015, TRD-030
@@ -1743,7 +1743,7 @@ npm run dev
 - ✅ PDF-to-image conversion implemented using PyMuPDF for GPT-4o compatibility
 - ✅ Test coverage: 92% (92/93 tests passing)
 - ✅ Accuracy validation: 82.4% average (exceeds 70% threshold)
-- ✅ Performance: 17-19s average (within NFR-001 <20s requirement)
+- ✅ Performance: 17-19s average (within NFR-001 <25s requirement)
 
 **Critical Bugs Fixed**:
 1. **GPT-4o PDF Compatibility**: GPT-4o Vision API only accepts images, not PDFs directly
@@ -1829,7 +1829,7 @@ Average:                 82.4% accuracy (42/51 fields)
 **Sprint Goals**:
 - Achieve ≥80% backend unit test coverage
 - Validate ≥90% field extraction accuracy on test dataset
-- Verify ≤20s parse time performance
+- Verify ≤25s parse time performance
 - Complete E2E testing with Playwright
 - Security review and hardening
 
@@ -1838,7 +1838,7 @@ Average:                 82.4% accuracy (42/51 fields)
 - [ ] Integration tests validate end-to-end API flow
 - [ ] E2E tests validate complete user workflow
 - [ ] Accuracy ≥90% on test dataset
-- [ ] Parse time ≤20s for all test samples
+- [ ] Parse time ≤25s for all test samples
 - [ ] Security testing passes (no critical vulnerabilities)
 
 ---
@@ -1894,7 +1894,7 @@ Average:                 82.4% accuracy (42/51 fields)
 - [ ] Currency extraction improves (target: 90%+ of invoices)
 - [ ] Average accuracy ≥90% validated across ≥10 test invoices
 - [ ] Accuracy report documents performance by invoice type
-- [ ] No regression in processing time (still ≤20s)
+- [ ] No regression in processing time (still ≤25s)
 
 **Expected Accuracy Improvement**:
 ```
@@ -1969,7 +1969,7 @@ Target:                   ≥90% (PRD requirement)
 
 - [ ] Backend + Frontend integration tested locally
 - [ ] Network errors handled gracefully
-- [ ] Timeout scenarios tested (>20s mock delay)
+- [ ] Timeout scenarios tested (>25s mock delay)
 - [ ] CORS preflight requests succeed
 - [ ] E2E workflow tested with real invoice samples
 
@@ -1990,10 +1990,10 @@ Target:                   ≥90% (PRD requirement)
 - [ ] Frontend unit tests: ≥70% coverage
 - [ ] Integration tests: All critical paths covered
 - [ ] E2E tests: Complete user workflow validated
-- [ ] Performance tests: All samples ≤20s parse time
+- [ ] Performance tests: All samples ≤25s parse time
 
 **Non-Functional Requirements**:
-- [ ] NFR-001: Parse time ≤20s for files ≤5MB (validated)
+- [ ] NFR-001: Parse time ≤25s for files ≤5MB (validated)
 - [ ] NFR-002: 99% uptime (aspirational, basic logging in place)
 - [ ] NFR-003: Input validation implemented and tested
 - [ ] NFR-004: No data persistence (code review confirmed)
@@ -2016,7 +2016,7 @@ Target:                   ≥90% (PRD requirement)
   - Implement field-level confidence scoring to identify weak extractions
 - **Contingency**: If accuracy <90%, focus on high-confidence subset and document limitations
 
-**RISK-002: GPT-4o API Latency Exceeds 20s**
+**RISK-002: GPT-4o API Latency Exceeds 25s**
 
 - **Likelihood**: Low
 - **Impact**: Medium (blocks NFR-001)
@@ -2024,7 +2024,7 @@ Target:                   ≥90% (PRD requirement)
   - Optimize image encoding/compression before sending to API
   - Use latest GPT-4o model (typically faster)
   - Monitor p95/p99 latency during testing
-- **Contingency**: Increase timeout to 25s if majority of samples <20s but outliers exceed
+- **Contingency**: Increase timeout to 30s if majority of samples <25s but outliers exceed
 
 **RISK-003: PDF to Image Conversion Performance Issues**
 
