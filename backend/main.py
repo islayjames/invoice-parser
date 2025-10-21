@@ -23,18 +23,26 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Configure CORS
-origins = [
-    "http://localhost:5173",  # Vite dev server
-    "http://localhost:3000",  # React dev server
-]
+# Configure CORS with environment variable support
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+cors_origins = [origin.strip() for origin in cors_origins_env.split(",") if origin.strip()]
+
+# Add localhost for development if no CORS_ORIGINS specified
+if not cors_origins:
+    cors_origins = [
+        "http://localhost:5173",  # Vite dev server
+        "http://localhost:3000",  # React dev server
+    ]
+
+cors_origin_regex = os.getenv("CORS_ORIGIN_REGEX")  # For preview deployments
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=False,
-    allow_methods=["POST", "GET", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_origins=cors_origins,
+    allow_origin_regex=cors_origin_regex if cors_origin_regex else None,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
     max_age=600
 )
 
