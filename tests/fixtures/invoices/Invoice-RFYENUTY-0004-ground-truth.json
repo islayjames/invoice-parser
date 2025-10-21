@@ -1,0 +1,36 @@
+{
+  "file_name": "Invoice-RFYENUTY-0004.pdf",
+  "description": "TypingMind cloud add\u2011on invoice",
+  "expected_fields": {
+    "supplier.name": "TypingMind",
+    "supplier.address": "1309 Coffeen Avenue, Sheridan, Wyoming 82801, United States",
+    "supplier.phone": "",
+    "supplier.email": "support@typingmind.com",
+    "supplier.tax_id": "",
+    "customer.name": "James Montano Simmons",
+    "customer.address": "Huntington Beach, CA 92648, United States",
+    "customer.account_id": "",
+    "invoice.number": "RFYENUTY-0004",
+    "invoice.issue_date": "2025-10-13",
+    "invoice.due_date": "2025-10-13",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 10.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 10.0,
+    "invoice.payment_terms": "Due immediately",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "TypingMind Cloud add-on 1GB (Oct 13 \u2013 Nov 13, 2025)",
+      "quantity": 1,
+      "unit_price": 10.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 10.0
+    }
+  ],
+  "notes": ""
+}

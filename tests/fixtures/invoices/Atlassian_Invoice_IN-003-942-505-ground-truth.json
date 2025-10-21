@@ -1,0 +1,36 @@
+{
+  "file_name": "Atlassian_Invoice_IN-003-942-505.pdf",
+  "description": "Atlassian invoice for Confluence monthly subscription",
+  "expected_fields": {
+    "supplier.name": "Atlassian Pty Ltd",
+    "supplier.address": "Level 6, 341 George St, Sydney NSW 2000, Australia",
+    "supplier.phone": "",
+    "supplier.email": "",
+    "supplier.tax_id": "53 102 443 916",
+    "customer.name": "GameApart",
+    "customer.address": "7856 Moonmist Circle, Huntington Beach, CA 92648, United States",
+    "customer.account_id": "",
+    "invoice.number": "IN-003-942-505",
+    "invoice.issue_date": "2025-07-22",
+    "invoice.due_date": "2025-07-22",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 89.6,
+    "invoice.tax": 0.0,
+    "invoice.total": 89.6,
+    "invoice.payment_terms": "Paid via credit card",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Confluence Monthly Standard subscription for 14 users (Jul 21 \u2013 Aug 21, 2025)",
+      "quantity": 14,
+      "unit_price": 6.4,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 89.6
+    }
+  ],
+  "notes": "Receipt \u2013 invoice already paid. Site address: virtualgamenight.atlassian.net."
+}

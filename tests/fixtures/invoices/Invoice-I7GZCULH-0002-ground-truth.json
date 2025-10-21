@@ -1,0 +1,45 @@
+{
+  "file_name": "Invoice-I7GZCULH-0002.pdf",
+  "description": "Vercel invoice for payment processing fee and credits",
+  "expected_fields": {
+    "supplier.name": "Vercel Inc.",
+    "supplier.address": "440 N Barranca Ave #4133, Covina, CA 91723, United States",
+    "supplier.phone": "",
+    "supplier.email": "ar@vercel.com",
+    "supplier.tax_id": "",
+    "customer.name": "James Simmons",
+    "customer.address": "17181 Marina View Place, Huntington Beach, CA 92649, United States",
+    "customer.account_id": "",
+    "invoice.number": "I7GZCULH-0002",
+    "invoice.issue_date": "2025-09-01",
+    "invoice.due_date": "2025-09-01",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 20.88,
+    "invoice.tax": 0.0,
+    "invoice.total": 20.88,
+    "invoice.payment_terms": "Due immediately",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 2,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Payment Processing Fee",
+      "quantity": 1,
+      "unit_price": 0.88,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 0.88
+    },
+    {
+      "sku": "",
+      "description": "Vercel v0 Credits",
+      "quantity": 20,
+      "unit_price": 1.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 20.0
+    }
+  ],
+  "notes": ""
+}

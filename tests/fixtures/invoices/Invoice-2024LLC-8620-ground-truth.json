@@ -1,0 +1,36 @@
+{
+  "file_name": "Invoice-2024LLC-8620.pdf",
+  "description": "Weaviate Cloud serverless cluster usage invoice",
+  "expected_fields": {
+    "supplier.name": "Weaviate, LLC",
+    "supplier.address": "Prinsengracht 769a, 1017JZ Amsterdam, Netherlands",
+    "supplier.phone": "",
+    "supplier.email": "support@weaviate.io",
+    "supplier.tax_id": "98-1754430",
+    "customer.name": "James Simmons",
+    "customer.address": "17181 Marina View Pl., Huntington Beach, California 92649, United States",
+    "customer.account_id": "",
+    "invoice.number": "2024LLC-8620",
+    "invoice.issue_date": "2025-10-01",
+    "invoice.due_date": "2025-10-01",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 19.17,
+    "invoice.tax": 0.0,
+    "invoice.total": 19.17,
+    "invoice.payment_terms": "Due immediately",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Weaviate Cloud (Serverless - non\u2011HA - Standard SLA) usage (Sep 8 \u2013 Sep 30, 2025)",
+      "quantity": 1,
+      "unit_price": 19.17,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 19.17
+    }
+  ],
+  "notes": "Cluster name: sgl-vfm."
+}

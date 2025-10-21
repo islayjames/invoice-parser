@@ -1,0 +1,36 @@
+{
+  "file_name": "invoice_34971.pdf",
+  "description": "Docupilot subscription invoice from Flackon Inc",
+  "expected_fields": {
+    "supplier.name": "Flackon Inc",
+    "supplier.address": "2035 Sunset Lake Road, Suite B-2, Newark, Delaware 19702, United States",
+    "supplier.phone": "",
+    "supplier.email": "support@docupilot.app",
+    "supplier.tax_id": "61-1884970",
+    "customer.name": "James Simmons",
+    "customer.address": "",
+    "customer.account_id": "",
+    "invoice.number": "34971",
+    "invoice.issue_date": "2025-09-16",
+    "invoice.due_date": "2025-09-16",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 29.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 29.0,
+    "invoice.payment_terms": "Due on receipt",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Docupilot - STARTER subscription (Sep 16 \u2013 Oct 15, 2025)",
+      "quantity": 1,
+      "unit_price": 29.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 29.0
+    }
+  ],
+  "notes": "Next billing date is Oct 16, 2025. Invoice already paid."
+}

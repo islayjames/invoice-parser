@@ -1,0 +1,36 @@
+{
+  "file_name": "INV326510840_A00962584_10202025.pdf",
+  "description": "Zoom Workplace Pro monthly subscription invoice",
+  "expected_fields": {
+    "supplier.name": "Zoom Communications, Inc.",
+    "supplier.address": "55 Almaden Blvd, 6th Floor, San Jose, CA 95113, United States",
+    "supplier.phone": "",
+    "supplier.email": "",
+    "supplier.tax_id": "61-1648780",
+    "customer.name": "James Simmons",
+    "customer.address": "7856 Moonmist Cir, Huntington Beach, CA 92648, United States",
+    "customer.account_id": "50903965",
+    "invoice.number": "INV326510840",
+    "invoice.issue_date": "2025-10-20",
+    "invoice.due_date": "2025-10-20",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 16.99,
+    "invoice.tax": 0.83,
+    "invoice.total": 17.82,
+    "invoice.payment_terms": "Due upon receipt",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Zoom Workplace Pro Monthly subscription (Oct 20 \u2013 Nov 19, 2025)",
+      "quantity": 1,
+      "unit_price": 16.99,
+      "discount": 0.0,
+      "tax_rate": 0.05,
+      "total": 17.82
+    }
+  ],
+  "notes": "Tax includes Utility Users Tax of $0.83; invoice already paid."
+}

@@ -1,0 +1,36 @@
+{
+  "file_name": "Jell-2024-02-03.pdf",
+  "description": "Jell Technologies invoice for Starter subscription",
+  "expected_fields": {
+    "supplier.name": "Jell Technologies Inc.",
+    "supplier.address": "",
+    "supplier.phone": "+1-628-888-2880",
+    "supplier.email": "billing@jell.com",
+    "supplier.tax_id": "",
+    "customer.name": "Quality Built LLC",
+    "customer.address": "633 S Andrews Ave, Ft Lauderdale, FL 33301, US",
+    "customer.account_id": "1702357679336325417",
+    "invoice.number": "1OfaOjCC2rW4JXBCFuz4bsnf",
+    "invoice.issue_date": "2024-02-03",
+    "invoice.due_date": "2024-02-03",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 30.0,
+    "invoice.tax": 0.0,
+    "invoice.total": 30.0,
+    "invoice.payment_terms": "Due immediately",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 1,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "Subscription to Starter plan (2024-02-03 to 2024-03-03)",
+      "quantity": 6,
+      "unit_price": 5.0,
+      "discount": 0.0,
+      "tax_rate": 0.0,
+      "total": 30.0
+    }
+  ],
+  "notes": ""
+}
