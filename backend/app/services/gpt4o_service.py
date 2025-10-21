@@ -42,6 +42,7 @@ from typing import Optional
 from openai import AsyncOpenAI
 from app.schemas import InvoiceResponse, InvoiceMetadata
 from app.utils.retry import retry_with_exponential_backoff
+from app.utils.pdf_processor import convert_pdf_to_base64_image
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +143,7 @@ class GPT4oService:
         source_format = self._detect_format(mime_type)
 
         # Build messages for GPT-4o
-        messages = self._build_messages(file_content, mime_type, source_format)
+        messages = await self._build_messages(file_content, mime_type, source_format)
 
         try:
             # Call GPT-4o API with retry logic (Section 6.2)
@@ -228,7 +229,7 @@ class GPT4oService:
             # Default to text for unknown types
             return "text"
 
-    def _build_messages(
+    async def _build_messages(
         self,
         file_content: bytes,
         mime_type: str,
@@ -259,8 +260,27 @@ class GPT4oService:
 
         # Build user message based on format
         if source_format in ["pdf", "image"]:
-            # Use vision capabilities for PDF and images
-            base64_content = base64.b64encode(file_content).decode("utf-8")
+            # Handle PDF conversion for GPT-4o Vision API compatibility
+            if source_format == "pdf":
+                # Convert PDF to image first (TRD Section 6.1 requirement)
+                # GPT-4o Vision API only accepts image MIME types
+                try:
+                    base64_content = await convert_pdf_to_base64_image(file_content)
+                    # Override MIME type to PNG after conversion
+                    actual_mime_type = "image/png"
+                    logger.info(
+                        f"Converted PDF to PNG for GPT-4o Vision API compatibility "
+                        f"(original size: {len(file_content)} bytes)"
+                    )
+                except ValueError as e:
+                    logger.error(f"PDF conversion failed: {e}")
+                    raise InvoiceParsingError(f"Failed to process PDF: {str(e)}")
+            else:
+                # Images can be sent directly without conversion
+                base64_content = base64.b64encode(file_content).decode("utf-8")
+                actual_mime_type = mime_type
+
+            # Build vision message with image data
             user_message = {
                 "role": "user",
                 "content": [
@@ -271,7 +291,7 @@ class GPT4oService:
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": f"data:{mime_type};base64,{base64_content}"
+                            "url": f"data:{actual_mime_type};base64,{base64_content}"
                         }
                     }
                 ]
