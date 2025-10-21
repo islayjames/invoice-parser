@@ -1,0 +1,36 @@
+{
+  "file_name": "sample-XXX.pdf",
+  "description": "Brief description of invoice type and layout",
+  "expected_fields": {
+    "supplier.name": "",
+    "supplier.address": "",
+    "supplier.phone": "",
+    "supplier.email": "",
+    "supplier.tax_id": "",
+    "customer.name": "",
+    "customer.address": "",
+    "customer.account_id": "",
+    "invoice.number": "",
+    "invoice.issue_date": "YYYY-MM-DD",
+    "invoice.due_date": "YYYY-MM-DD",
+    "invoice.currency": "USD",
+    "invoice.subtotal": 0.00,
+    "invoice.tax": 0.00,
+    "invoice.total": 0.00,
+    "invoice.payment_terms": "",
+    "invoice.po_number": ""
+  },
+  "expected_line_items_count": 0,
+  "expected_line_items": [
+    {
+      "sku": "",
+      "description": "",
+      "quantity": 0,
+      "unit_price": 0.00,
+      "discount": 0.00,
+      "tax_rate": 0.00,
+      "total": 0.00
+    }
+  ],
+  "notes": ""
+}

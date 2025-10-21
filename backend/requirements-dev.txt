@@ -1,0 +1,12 @@
+# Development dependencies
+-r requirements.txt
+
+# Code Quality
+black==23.11.0
+flake8==6.1.0
+isort==5.12.0
+mypy==1.7.0
+
+# Testing Tools
+pytest-watch==4.2.0
+pytest-xdist==3.5.0
