@@ -1,10 +1,10 @@
 interface PaymentSummaryProps {
   invoice: {
-    subtotal?: { value: number; confidence: number }
-    tax?: { value: number; confidence: number }
-    total: { value: number; confidence: number }
-    currency: { value: string; confidence: number }
-    payment_terms?: { value: string; confidence: number }
+    subtotal?: { value: number; confidence: number } | null
+    tax?: { value: number; confidence: number } | null
+    total?: { value: number; confidence: number } | null
+    currency?: { value: string; confidence: number } | null
+    payment_terms?: { value: string; confidence: number } | null
   }
 }
 
@@ -26,7 +26,7 @@ export function PaymentSummary({ invoice }: PaymentSummaryProps) {
         {invoice.tax?.value && <div className="text-base text-gray-700">Tax: ${formatCurrency(invoice.tax.value)}</div>}
 
         <div className="text-xl font-bold text-gray-900 border-t border-gray-300 pt-2 mt-2">
-          Total: ${formatCurrency(invoice.total.value)} {invoice.currency.value}
+          Total: {invoice.total?.value ? `$${formatCurrency(invoice.total.value)}` : "-"} {invoice.currency?.value || ""}
         </div>
       </div>
 

@@ -4,13 +4,13 @@ interface LineItemField {
 }
 
 interface LineItem {
-  sku?: LineItemField
-  description: LineItemField
-  quantity: LineItemField
-  unit_price: LineItemField
-  discount?: LineItemField
-  tax_rate?: LineItemField
-  total: LineItemField
+  sku?: LineItemField | null
+  description?: LineItemField | null
+  quantity?: LineItemField | null
+  unit_price?: LineItemField | null
+  discount?: LineItemField | null
+  tax_rate?: LineItemField | null
+  total?: LineItemField | null
 }
 
 interface LineItemsTableProps {
@@ -64,15 +64,17 @@ export function LineItemsTable({ lineItems, currency = "USD" }: LineItemsTablePr
               {hasSku && (
                 <td className="p-3 text-left text-sm text-gray-600 border border-gray-200">{item.sku?.value || "-"}</td>
               )}
-              <td className="p-3 text-left text-sm text-gray-900 border border-gray-200">{item.description.value}</td>
-              <td className="p-3 text-right text-sm text-gray-900 border border-gray-200">
-                {formatQuantity(item.quantity.value)}
+              <td className="p-3 text-left text-sm text-gray-900 border border-gray-200">
+                {item.description?.value || "-"}
               </td>
               <td className="p-3 text-right text-sm text-gray-900 border border-gray-200">
-                {formatCurrency(item.unit_price.value)}
+                {item.quantity?.value ? formatQuantity(item.quantity.value) : "-"}
+              </td>
+              <td className="p-3 text-right text-sm text-gray-900 border border-gray-200">
+                {item.unit_price?.value ? formatCurrency(item.unit_price.value) : "-"}
               </td>
               <td className="p-3 text-right text-sm font-semibold text-gray-900 border border-gray-200">
-                {formatCurrency(item.total.value)}
+                {item.total?.value ? formatCurrency(item.total.value) : "-"}
               </td>
             </tr>
           ))}
