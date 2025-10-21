@@ -4,14 +4,15 @@ AI-powered API and UI prototype for parsing invoices of any format (PDF, image, 
 
 ## Project Status
 
-**Phase**: Planning & Architecture (PRD Complete)
+**Phase**: Sprint 1 - Foundation & Setup (In Progress)
 **Version**: v1.0 (Prototype)
 **Last Updated**: 2025-10-20
 
 ```yaml
 ✅ PRD Complete: docs/PRD/PRD-20251020-invoice-parser.md
-🔄 TRD Pending: Technical architecture design in progress
-⏳ Implementation: Awaiting TRD approval
+✅ TRD Complete: docs/TRD/TRD-20251020-invoice-parser.md
+🔄 Sprint 1 In Progress: Environment setup and test dataset creation
+⏳ Sprint 2-5: Backend, Frontend, Testing, Deployment
 ```
 
 ## Overview
@@ -180,24 +181,43 @@ invoice-parser/
 - Node.js 18+
 - OpenAI API key with GPT-4o access
 
-### Installation (After Implementation)
+### Installation
+
+#### Backend Setup
 
 ```bash
-# Backend setup
 cd backend
 python -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp ../.env.example .env    # Add your OpenAI API key
+cp .env.example .env       # Add your OPENAI_API_KEY
 
-# Frontend setup
-cd ../frontend
+# Run development server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+#### Frontend Setup
+
+```bash
+cd frontend
 npm install
-cp ../.env.example .env.local
+cp .env.example .env.local  # Set VITE_API_BASE_URL=http://localhost:8000
 
-# Run development servers
-# Backend: uvicorn app.main:app --reload
-# Frontend: npm start
+# Run development server
+npm run dev
+```
+
+#### Running Tests
+
+```bash
+# Backend tests
+cd backend
+pytest                      # Run all tests
+pytest --cov               # Run with coverage report
+
+# Frontend tests
+cd frontend
+npm test                   # Run Jest tests
 ```
 
 ## API Usage (Planned)
@@ -247,13 +267,13 @@ This project uses an AI-augmented development process with specialized sub-agent
 
 See [CLAUDE.md](CLAUDE.md) for detailed orchestration workflows.
 
-### Current Phase: Planning → Implementation
+### Current Phase: Sprint 1 - Foundation & Setup
 
 1. ✅ **PRD Complete**: Requirements and scope defined
-2. 🔄 **TRD In Progress**: Technical architecture design
-3. ⏳ **Implementation**: Backend API, Frontend UI, Deployment
-4. ⏳ **Testing**: Unit, integration, and E2E validation
-5. ⏳ **Launch**: Production deployment and monitoring
+2. ✅ **TRD Complete**: Technical architecture and task breakdown
+3. 🔄 **Sprint 1 (Days 1-2)**: Environment setup and test dataset
+4. ⏳ **Sprint 2-3 (Days 3-7)**: Backend and Frontend implementation
+5. ⏳ **Sprint 4-5 (Days 8-10)**: Testing and Deployment
 
 ### Next Steps
 
