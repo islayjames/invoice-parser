@@ -79,6 +79,28 @@ class Settings(BaseSettings):
         default="gpt-4o-2024-08-06",
         description="OpenAI model version for invoice extraction"
     )
+    openai_temperature: float = Field(
+        default=0.4,
+        ge=0.0,
+        le=1.0,
+        description="GPT model temperature for response consistency (0.0-1.0)"
+    )
+    openai_max_tokens: int = Field(
+        default=4096,
+        gt=0,
+        description="Maximum response tokens for GPT model"
+    )
+    openai_timeout: float = Field(
+        default=20.0,
+        gt=0.0,
+        description="OpenAI API request timeout in seconds"
+    )
+
+    # Environment
+    environment: str = Field(
+        default="development",
+        description="Application environment (development/staging/production)"
+    )
 
     # CORS Configuration
     cors_origins: Union[str, List[str]] = Field(
