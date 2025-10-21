@@ -348,9 +348,9 @@ Return ONLY valid JSON (no markdown, no code blocks, no explanatory text) matchi
     "due_date": {"value": "YYYY-MM-DD", "confidence": 0.0-1.0},
     "currency": {"value": "string", "confidence": 0.0-1.0} (optional),
     "subtotal": {"value": number, "confidence": 0.0-1.0} (optional),
-    "tax_amount": {"value": number, "confidence": 0.0-1.0} (optional),
-    "total_amount": {"value": number, "confidence": 0.0-1.0} (optional),
-    "payment_terms": {"value": "string", "confidence": 0.0-1.0} (optional),
+    "tax": {"value": number, "confidence": 0.0-1.0} (CRITICAL - always include),
+    "total": {"value": number, "confidence": 0.0-1.0} (CRITICAL - always include),
+    "payment_terms": {"value": "string", "confidence": 0.0-1.0} (CRITICAL - always include),
     "po_number": {"value": "string", "confidence": 0.0-1.0} (optional)
   },
   "line_items": [
@@ -367,18 +367,90 @@ Return ONLY valid JSON (no markdown, no code blocks, no explanatory text) matchi
 }
 
 EXTRACTION GUIDELINES:
-1. REQUIRED FIELDS (always extract): supplier.name, customer.name, invoice.number, invoice.issue_date, invoice.due_date
-2. OPTIONAL FIELDS: All other fields - only include if clearly present in the document
-3. CONFIDENCE SCORES:
+
+1. REQUIRED FIELDS (always extract with high confidence):
+   - supplier.name, customer.name
+   - invoice.number, invoice.issue_date, invoice.due_date
+
+2. CRITICAL FINANCIAL FIELDS (search thoroughly and ALWAYS include):
+
+   A. invoice.total: The final amount due or paid. LOOK FOR:
+      * "Total", "Total Amount", "Amount Due", "Total Due", "Grand Total"
+      * Usually at the BOTTOM of the invoice in bold or larger font
+      * In summary/footer section or payment box
+      * If you cannot find it, check if subtotal equals total (no tax)
+      * ALWAYS include this field with value 0.0 if truly not found
+
+   B. invoice.tax: Tax amount charged. LOOK FOR:
+      * "Tax", "Sales Tax", "VAT", "GST", "HST"
+      * Usually in summary section near the total
+      * May be 0.00 if tax-exempt or tax-included pricing
+      * If not found, set value to 0.0 with confidence 0.5
+      * ALWAYS include this field (use 0.0 if no tax shown)
+
+   C. invoice.payment_terms: Payment status or terms. LOOK FOR:
+      * "Paid", "Payment Received", "Thank you for your payment"
+      * "Due on [date]", "Net 30", "Due upon receipt"
+      * "Outstanding", "Unpaid", "Balance Due"
+      * Check for payment confirmations, receipt numbers, or due dates
+      * If unclear, extract any payment-related text found
+      * ALWAYS include this field (use "Not specified" if nothing found)
+
+3. OPTIONAL FIELDS (include if clearly present):
+   - supplier.address, supplier.phone, supplier.email, supplier.tax_id
+   - customer.address, customer.account_id
+   - invoice.currency (default to "USD" if document appears to be US-based)
+   - invoice.subtotal, invoice.po_number
+
+4. CONFIDENCE SCORES:
    - 1.0 = Absolutely certain (printed clearly, no ambiguity)
    - 0.9-0.99 = Very confident (clear but minor uncertainty)
    - 0.7-0.89 = Confident (readable but some interpretation needed)
    - 0.5-0.69 = Moderate confidence (unclear or partially obscured)
    - 0.0-0.49 = Low confidence (guessing or very unclear)
-4. DATE FORMAT: Always use YYYY-MM-DD format for dates
-5. NUMBERS: Extract as numeric values (not strings) for amounts, quantities, prices
-6. MISSING DATA: Omit optional fields entirely if not present (do not include null/empty values)
-7. LINE ITEMS: Extract up to 50 line items maximum
+
+5. DATE FORMAT: Always use YYYY-MM-DD format
+   - Prioritize "Invoice Date" over service period dates
+   - For due_date, use payment due date (not service end date)
+
+6. NUMBERS: Extract as numeric values (not strings)
+   - Remove currency symbols: "$100.00" → 100.00
+   - Use 0.0 for zero amounts (not null)
+
+7. MISSING DATA HANDLING:
+   - For CRITICAL FINANCIAL FIELDS: Always include even if value is 0.0 or "Not specified"
+   - For OPTIONAL FIELDS: Omit entirely if not present
+   - Never return null - use 0.0 for missing numbers, "" for missing strings
+
+8. LINE ITEMS: Extract up to 50 line items maximum
+
+EXAMPLE EXTRACTION:
+
+For an invoice showing:
+  Subtotal: $50.00
+  Tax: $4.50
+  Total: $54.50
+  Status: PAID
+
+Extract as:
+{
+  "invoice": {
+    "subtotal": {"value": 50.00, "confidence": 1.0},
+    "tax": {"value": 4.50, "confidence": 1.0},
+    "total": {"value": 54.50, "confidence": 1.0},
+    "payment_terms": {"value": "Paid", "confidence": 0.9}
+  }
+}
+
+For a tax-exempt invoice:
+{
+  "invoice": {
+    "subtotal": {"value": 100.00, "confidence": 1.0},
+    "tax": {"value": 0.0, "confidence": 0.8},
+    "total": {"value": 100.00, "confidence": 1.0},
+    "payment_terms": {"value": "Due upon receipt", "confidence": 0.7}
+  }
+}
 
 Return ONLY the JSON object, no additional text or formatting."""
         return prompt
