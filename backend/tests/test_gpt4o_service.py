@@ -79,6 +79,25 @@ def sample_pdf_content():
 
 
 @pytest.fixture
+def mock_pdf_converter(monkeypatch):
+    """
+    Mock PDF-to-image conversion to return fake base64 image data.
+
+    This allows tests to focus on GPT-4o response handling without
+    requiring valid PDF bytes that PyMuPDF can parse.
+    """
+    async def fake_convert(pdf_content: bytes, dpi: int = 150, page_number: int = 0) -> str:
+        # Return fake base64 PNG data (1x1 transparent pixel)
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+
+    # Patch the conversion function
+    monkeypatch.setattr(
+        "app.services.gpt4o_service.convert_pdf_to_base64_image",
+        fake_convert
+    )
+
+
+@pytest.fixture
 def sample_image_content():
     """
     Mock JPEG image file content for testing.
@@ -202,7 +221,7 @@ def gpt4o_service(mock_openai_client):
 
 @pytest.mark.asyncio
 async def test_parses_pdf_invoice_successfully(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test GPT-4o successfully parses PDF invoice into InvoiceResponse.
@@ -315,7 +334,7 @@ async def test_parses_text_invoice_successfully(
 
 @pytest.mark.asyncio
 async def test_returns_confidence_scores(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test that all extracted fields include confidence scores.
@@ -366,7 +385,7 @@ async def test_returns_confidence_scores(
 
 
 @pytest.mark.asyncio
-async def test_retries_on_openai_error(gpt4o_service, mock_openai_client, sample_pdf_content):
+async def test_retries_on_openai_error(gpt4o_service, mock_openai_client, sample_pdf_content, mock_pdf_converter):
     """
     Test service retries on transient OpenAI API errors using exponential backoff.
 
@@ -415,7 +434,7 @@ async def test_retries_on_openai_error(gpt4o_service, mock_openai_client, sample
 
 
 @pytest.mark.asyncio
-async def test_respects_timeout(gpt4o_service, mock_openai_client, sample_pdf_content):
+async def test_respects_timeout(gpt4o_service, mock_openai_client, sample_pdf_content, mock_pdf_converter):
     """
     Test service raises error if GPT-4o request exceeds timeout.
 
@@ -449,7 +468,7 @@ async def test_respects_timeout(gpt4o_service, mock_openai_client, sample_pdf_co
 
 @pytest.mark.asyncio
 async def test_validates_response_schema(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test service validates GPT-4o response against InvoiceResponse schema.
@@ -489,7 +508,7 @@ async def test_validates_response_schema(
 
 @pytest.mark.asyncio
 async def test_handles_malformed_response(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_malformed_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_malformed_gpt4o_response, mock_pdf_converter
 ):
     """
     Test service handles GPT-4o returning invalid/malformed JSON.
@@ -523,7 +542,7 @@ async def test_handles_malformed_response(
 
 @pytest.mark.asyncio
 async def test_extracts_all_critical_fields(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test service extracts all critical invoice fields.
@@ -571,7 +590,7 @@ async def test_extracts_all_critical_fields(
 
 @pytest.mark.asyncio
 async def test_handles_missing_optional_fields(
-    gpt4o_service, mock_openai_client, sample_pdf_content
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_pdf_converter
 ):
     """
     Test service gracefully handles missing optional fields.
@@ -637,7 +656,7 @@ async def test_handles_missing_optional_fields(
 
 @pytest.mark.asyncio
 async def test_uses_correct_model_and_temperature(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test service uses correct GPT-4o model and temperature settings.
@@ -668,7 +687,7 @@ async def test_uses_correct_model_and_temperature(
 
 @pytest.mark.asyncio
 async def test_includes_metadata_in_response(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test service includes metadata in response.
@@ -717,7 +736,7 @@ async def test_includes_metadata_in_response(
 
 @pytest.mark.asyncio
 async def test_handles_empty_line_items(
-    gpt4o_service, mock_openai_client, sample_pdf_content
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_pdf_converter
 ):
     """
     Test service handles invoices with no line items (summary invoices).
@@ -761,7 +780,7 @@ async def test_handles_empty_line_items(
 
 @pytest.mark.asyncio
 async def test_handles_max_line_items_limit(
-    gpt4o_service, mock_openai_client, sample_pdf_content
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_pdf_converter
 ):
     """
     Test service respects max line items limit (50 per schema).
@@ -822,7 +841,7 @@ async def test_handles_max_line_items_limit(
 
 @pytest.mark.asyncio
 async def test_parsing_completes_within_timeout(
-    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response
+    gpt4o_service, mock_openai_client, sample_pdf_content, mock_gpt4o_response, mock_pdf_converter
 ):
     """
     Test parsing completes within required timeout (20s).
