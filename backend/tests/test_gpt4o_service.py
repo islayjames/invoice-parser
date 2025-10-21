@@ -35,6 +35,7 @@ import asyncio
 
 # These imports will FAIL in RED phase - this is expected behavior
 from app.services.gpt4o_service import GPT4oService, InvoiceParsingError
+from app.utils.retry import retry_with_exponential_backoff
 from app.schemas import (
     InvoiceResponse,
     FieldValue,
@@ -391,6 +392,7 @@ async def test_retries_on_openai_error(gpt4o_service, mock_openai_client, sample
             "due_date": {"value": "2024-02-15", "confidence": 0.9},
         },
     })
+    mock_response.model = "gpt-4o-2024-08-06"
 
     # Simulate: fail with rate limit, fail again, then succeed
     mock_openai_client.chat.completions.create.side_effect = [
@@ -400,10 +402,8 @@ async def test_retries_on_openai_error(gpt4o_service, mock_openai_client, sample
     ]
 
     # Execute - should succeed after 2 retries
-    with patch("app.services.gpt4o_service.retry_with_exponential_backoff") as mock_retry:
-        # Configure retry utility to pass through to actual API call
-        mock_retry.side_effect = lambda func, *args, **kwargs: func(*args, **kwargs)
-
+    # Use real retry logic but spy on calls
+    with patch("app.services.gpt4o_service.retry_with_exponential_backoff", wraps=retry_with_exponential_backoff) as mock_retry:
         result = await gpt4o_service.parse_invoice(
             file_content=sample_pdf_content,
             file_name="invoice.pdf",
